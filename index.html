@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Galaxy Blackjack</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    color:white;
+    text-align:center;
+    min-height:100vh;
+    overflow-x:hidden;
+
+    background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.2) 1px, transparent 2px),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,.15) 1px, transparent 2px),
+    radial-gradient(circle at 60% 70%, rgba(255,255,255,.2) 1px, transparent 2px),
+    linear-gradient(135deg,#0b0015,#1a0033,#240047,#0d001f);
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.title{
+    font-size:55px;
+    margin-top:20px;
+    text-shadow:
+    0 0 10px #a855f7,
+    0 0 25px #a855f7,
+    0 0 50px #7e22ce;
+}
+
+.panel{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+    backdrop-filter:blur(8px);
+    border-radius:15px;
+    padding:20px;
+    margin-top:20px;
+}
+
+input{
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    width:250px;
+    font-size:16px;
+}
+
+button{
+    background:#7e22ce;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:12px 18px;
+    margin:5px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 20px #a855f7;
+}
+
+.cards{
+    min-height:140px;
+    margin:10px;
+}
+
+.card{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    width:85px;
+    height:120px;
+
+    background:white;
+    color:black;
+
+    border-radius:12px;
+    margin:5px;
+
+    font-size:28px;
+    font-weight:bold;
+
+    box-shadow:
+    0 0 10px #a855f7,
+    0 0 25px #7e22ce;
+}
+
+.info{
+    font-size:22px;
+    margin:10px;
+}
+
+#result{
+    font-size:30px;
+    margin-top:15px;
+    color:#ffd700;
+}
+
+#leaderboard{
+    text-align:left;
+    max-width:400px;
+    margin:auto;
+    margin-top:20px;
+}
+
+.rank{
+    padding:8px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.betButtons{
+    margin-top:15px;
+}
+
+.gameButtons{
+    margin-top:15px;
+}
+
+h2{
+    margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 class="title">🌌 GALAXY BLACKJACK 🌌</h1>
+
+<div id="login" class="panel">
+
+<h2>Create Username</h2>
+
+<br>
+
+<input
+id="username"
+placeholder="Enter Username">
+
+<br><br>
+
+<button onclick="createUser()">
+Play
+</button>
+
+</div>
+
+<div
+id="game"
+style="display:none;">
+
+<div class="panel">
+
+<h2 id="playerName"></h2>
+
+<div class="info">
+💰 Chips:
+<span id="chips">20000</span>
+</div>
+
+<div class="info">
+🎲 Current Bet:
+<span id="bet">0</span>
+</div>
+
+<h2>Dealer Hand</h2>
+
+<div
+class="cards"
+id="dealerCards">
+</div>
+
+<div class="info">
+Dealer Total:
+<span id="dealerTotal">0</span>
+</div>
+
+<h2>Your Hand</h2>
+
+<div
+class="cards"
+id="playerCards">
+</div>
+
+<div class="info">
+Your Total:
+<span id="playerTotal">0</span>
+</div>
+
+<div class="betButtons">
+
+<button onclick="betAmount(10)">
+10
+</button>
+
+<button onclick="betAmount(50)">
+50
+</button>
+
+<button onclick="betAmount(100)">
+100
+</button>
+
+<button onclick="betAmount(250)">
+250
+</button>
+
+<button onclick="allIn()">
+ALL IN
+</button>
+
+</div>
+
+<div class="gameButtons">
+
+<button onclick="startRound()">
+Deal
+</button>
+
+<button onclick="hit()">
+Hit
+</button>
+
+<button onclick="stand()">
+Stand
+</button>
+
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<div
+id="leaderboard"
+class="panel">
+
+<h2>🏆 Leaderboard</h2>
+
+<div id="leaderboardList"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let chips = Number(localStorage.getItem("chips")) || 20000;
+let username = localStorage.getItem("username") || "";
+
+let currentBet = 0;
+
+let playerHand = [];
+let dealerHand = [];
+
+if(username){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("playerName").innerText = "👤 " + username;
+    updateDisplay();
+}
+
+function createUser(){
+
+    username = document.getElementById("username").value.trim();
+
+    if(username === ""){
+        alert("Enter a username");
+        return;
+    }
+
+    localStorage.setItem("username", username);
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("game").style.display = "block";
+
+    document.getElementById("playerName").innerText =
+    "👤 " + username;
+
+    updateDisplay();
+}
+
+function saveData(){
+
+    localStorage.setItem("chips", chips);
+
+    let leaderboard =
+    JSON.parse(
+    localStorage.getItem("leaderboard")
+    ) || {};
+
+    leaderboard[username] = chips;
+
+    localStorage.setItem(
+    "leaderboard",
+    JSON.stringify(leaderboard)
+    );
+
+    updateDisplay();
+}
+
+function updateDisplay(){
+
+    document.getElementById("chips").innerText =
+    chips.toLocaleString();
+
+    document.getElementById("bet").innerText =
+    currentBet.toLocaleString();
+
+    updateLeaderboard();
+}
+
+function updateLeaderboard(){
+
+    let leaderboard =
+    JSON.parse(
+    localStorage.getItem("leaderboard")
+    ) || {};
+
+    if(username){
+        leaderboard[username] = chips;
+    }
+
+    localStorage.setItem(
+    "leaderboard",
+    JSON.stringify(leaderboard)
+    );
+
+    let sorted =
+    Object.entries(leaderboard)
+    .sort((a,b)=>b[1]-a[1]);
+
+    let html = "";
+
+    sorted.forEach((player,index)=>{
+
+        html +=
+        `<div class="rank">
+        #${index+1}
+        ${player[0]}
+        -
+        ${Number(player[1]).toLocaleString()}
+        Chips
+        </div>`;
+    });
+
+    document.getElementById(
+    "leaderboardList"
+    ).innerHTML = html;
+}
+
+function betAmount(amount){
+
+    if(chips < amount){
+        return;
+    }
+
+    chips -= amount;
+    currentBet += amount;
+
+    saveData();
+}
+
+function allIn(){
+
+    if(chips <= 0){
+        return;
+    }
+
+    currentBet += chips;
+    chips = 0;
+
+    saveData();
+}
+
+function drawCard(){
+
+    return Math.floor(
+    Math.random() * 11
+    ) + 1;
+}
+
+function handTotal(hand){
+
+    return hand.reduce(
+    (sum,card)=>sum+card,0
+    );
+}
+
+function renderHands(){
+
+    let playerHTML = "";
+    let dealerHTML = "";
+
+    playerHand.forEach(card=>{
+
+        playerHTML +=
+        `<div class="card">${card}</div>`;
+    });
+
+    dealerHand.forEach(card=>{
+
+        dealerHTML +=
+        `<div class="card">${card}</div>`;
+    });
+
+    document.getElementById(
+    "playerCards"
+    ).innerHTML = playerHTML;
+
+    document.getElementById(
+    "dealerCards"
+    ).innerHTML = dealerHTML;
+
+    document.getElementById(
+    "playerTotal"
+    ).innerText =
+    handTotal(playerHand);
+
+    document.getElementById(
+    "dealerTotal"
+    ).innerText =
+    handTotal(dealerHand);
+}
+
+function startRound(){
+
+    if(currentBet <= 0){
+
+        alert(
+        "Place a bet first!"
+        );
+
+        return;
+    }
+
+    document.getElementById(
+    "result"
+    ).innerText = "";
+
+    playerHand = [];
+    dealerHand = [];
+
+    playerHand.push(drawCard());
+    playerHand.push(drawCard());
+
+    dealerHand.push(drawCard());
+    dealerHand.push(drawCard());
+
+    renderHands();
+}
+
+function hit(){
+
+    if(currentBet <= 0){
+        return;
+    }
+
+    playerHand.push(
+    drawCard()
+    );
+
+    renderHands();
+
+    if(
+    handTotal(playerHand)
+    > 21
+    ){
+
+        document.getElementById(
+        "result"
+        ).innerText =
+        "💥 BUST! YOU LOSE";
+
+        currentBet = 0;
+
+        saveData();
+    }
+}
+
+function stand(){
+
+    if(currentBet <= 0){
+        return;
+    }
+
+    while(
+    handTotal(dealerHand)
+    < 17
+    ){
+
+        dealerHand.push(
+        drawCard()
+        );
+    }
+
+    renderHands();
+
+    let playerScore =
+    handTotal(playerHand);
+
+    let dealerScore =
+    handTotal(dealerHand);
+
+    if(
+    dealerScore > 21 ||
+    playerScore > dealerScore
+    ){
+
+        chips += currentBet * 2;
+
+        document.getElementById(
+        "result"
+        ).innerText =
+        "🎉 YOU WIN";
+
+    }
+    else if(
+    playerScore === dealerScore
+    ){
+
+        chips += currentBet;
+
+        document.getElementById(
+        "result"
+        ).innerText =
+        "🤝 PUSH";
+
+    }
+    else{
+
+        document.getElementById(
+        "result"
+        ).innerText =
+        "❌ YOU LOSE";
+    }
+
+    currentBet = 0;
+
+    saveData();
+}
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
