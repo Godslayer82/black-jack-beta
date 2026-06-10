@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Galaxy Blackjack Test</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Blackjack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+
+:root{
+    --bg-deep:#05000f;
+    --bg-nebula:#16002e;
+    --neon:#a855f7;
+    --neon-dark:#7e22ce;
+    --neon-soft:rgba(168,85,247,.35);
+    --gold:#ffd700;
+    --cyan:#22d3ee;
+    --red:#f43f5e;
+    --green:#34d399;
+    --panel:rgba(255,255,255,.05);
+    --panel-border:rgba(168,85,247,.35);
+}
 
 *{
     margin:0;
@@ -12,129 +28,510 @@
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
-    font-family:Arial,sans-serif;
-    color:white;
+    font-family:'Rajdhani',Arial,sans-serif;
+    color:#fff;
     text-align:center;
     min-height:100vh;
     overflow-x:hidden;
-
     background:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.2) 1px, transparent 2px),
-    radial-gradient(circle at 80% 30%, rgba(255,255,255,.15) 1px, transparent 2px),
-    radial-gradient(circle at 60% 70%, rgba(255,255,255,.2) 1px, transparent 2px),
-    linear-gradient(135deg,#0b0015,#1a0033,#240047,#0d001f);
+        radial-gradient(ellipse at 70% 10%, rgba(126,34,206,.28), transparent 55%),
+        radial-gradient(ellipse at 15% 80%, rgba(34,211,238,.10), transparent 50%),
+        radial-gradient(ellipse at 30% 30%, rgba(168,85,247,.14), transparent 60%),
+        linear-gradient(160deg,var(--bg-deep) 0%,var(--bg-nebula) 45%,#0a0020 100%);
+    background-attachment:fixed;
+}
+
+#stars{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
 }
 
 .container{
+    position:relative;
+    z-index:1;
     max-width:1000px;
     margin:auto;
     padding:20px;
 }
 
 .title{
-    font-size:55px;
-    margin-top:20px;
-    text-shadow:
-    0 0 10px #a855f7,
-    0 0 25px #a855f7,
-    0 0 50px #7e22ce;
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:clamp(34px,7vw,62px);
+    letter-spacing:4px;
+    margin-top:18px;
+    background:linear-gradient(90deg,#e9d5ff,var(--neon),var(--cyan),var(--neon),#e9d5ff);
+    background-size:300% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:shimmer 7s linear infinite;
+    filter:drop-shadow(0 0 14px var(--neon-soft)) drop-shadow(0 0 40px rgba(126,34,206,.4));
+}
+
+@keyframes shimmer{
+    0%{background-position:0% 50%}
+    100%{background-position:300% 50%}
+}
+
+.subtitle{
+    font-family:'Orbitron',sans-serif;
+    font-size:12px;
+    letter-spacing:6px;
+    color:#c4b5fd;
+    opacity:.7;
+    margin-top:6px;
+    text-transform:uppercase;
 }
 
 .panel{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.2);
-    backdrop-filter:blur(8px);
-    border-radius:15px;
-    padding:20px;
-    margin-top:20px;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-radius:18px;
+    padding:24px;
+    margin-top:22px;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 10px 40px rgba(0,0,0,.45),
+        0 0 60px rgba(126,34,206,.12);
+    animation:panelIn .6s cubic-bezier(.2,.9,.3,1.2) both;
+}
+
+@keyframes panelIn{
+    from{opacity:0;transform:translateY(24px) scale(.97)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+h2{
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    letter-spacing:3px;
+    font-size:18px;
+    text-transform:uppercase;
+    color:#e9d5ff;
+}
+
+.zone-label{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    justify-content:center;
+    margin-top:18px;
+}
+
+.zone-label::before,
+.zone-label::after{
+    content:"";
+    height:1px;
+    width:90px;
+    background:linear-gradient(90deg,transparent,var(--neon-soft));
+}
+
+.zone-label::after{
+    background:linear-gradient(90deg,var(--neon-soft),transparent);
 }
 
 input{
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    width:250px;
-    font-size:16px;
+    padding:14px 16px;
+    border:1px solid var(--panel-border);
+    background:rgba(0,0,0,.4);
+    color:#fff;
+    border-radius:12px;
+    width:min(280px,80vw);
+    font-size:17px;
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    letter-spacing:1px;
+    outline:none;
+    transition:.25s;
+}
+
+input:focus{
+    border-color:var(--neon);
+    box-shadow:0 0 18px var(--neon-soft);
 }
 
 button{
-    background:#7e22ce;
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:12px 18px;
+    position:relative;
+    background:linear-gradient(135deg,var(--neon-dark),#5b21b6);
+    color:#fff;
+    border:1px solid rgba(233,213,255,.35);
+    border-radius:12px;
+    padding:12px 22px;
     margin:5px;
     cursor:pointer;
     font-size:16px;
-    transition:.2s;
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    overflow:hidden;
+}
+
+button::after{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-30%;
+    width:40%;
+    height:220%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+    transform:rotate(20deg) translateX(-120%);
+    transition:transform .5s ease;
+    pointer-events:none;
 }
 
 button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 20px #a855f7;
+    transform:translateY(-2px) scale(1.04);
+    box-shadow:0 0 22px var(--neon-soft),0 6px 18px rgba(0,0,0,.4);
+}
+
+button:hover::after{
+    transform:rotate(20deg) translateX(380%);
+}
+
+button:active{
+    transform:translateY(0) scale(.98);
+}
+
+button:disabled{
+    opacity:.35;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+
+button:focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:2px;
+}
+
+.chip-btn{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    padding:0;
+    font-size:15px;
+    border:4px dashed rgba(255,255,255,.55);
+    background:radial-gradient(circle at 35% 30%,#c084fc,var(--neon-dark) 60%,#4c1d95);
+    box-shadow:0 4px 0 #3b0764,0 8px 18px rgba(0,0,0,.5);
+}
+
+.chip-btn:hover{
+    transform:translateY(-4px) scale(1.07) rotate(-4deg);
+    box-shadow:0 8px 0 #3b0764,0 14px 26px rgba(0,0,0,.5),0 0 24px var(--neon-soft);
+}
+
+.chip-gold{
+    background:radial-gradient(circle at 35% 30%,#fde68a,#d97706 60%,#92400e);
+    box-shadow:0 4px 0 #713f12,0 8px 18px rgba(0,0,0,.5);
+    color:#1c1003;
+}
+
+.chip-gold:hover{
+    box-shadow:0 8px 0 #713f12,0 14px 26px rgba(0,0,0,.5),0 0 26px rgba(255,215,0,.45);
+}
+
+.hud{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:14px;
+    margin-top:14px;
+}
+
+.hud-item{
+    background:rgba(0,0,0,.35);
+    border:1px solid var(--panel-border);
+    border-radius:12px;
+    padding:10px 22px;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:1px;
+    min-width:170px;
+}
+
+.hud-item span{
+    color:var(--gold);
+    font-family:'Orbitron',sans-serif;
+    font-size:18px;
 }
 
 .cards{
-    min-height:140px;
-    margin:10px;
+    min-height:150px;
+    margin:14px 0 4px;
+    perspective:900px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .card{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-
-    width:85px;
-    height:120px;
-
-    background:white;
-    color:black;
-
+    width:92px;
+    height:130px;
     border-radius:12px;
-    margin:5px;
-
-    font-size:28px;
-    font-weight:bold;
-
-    box-shadow:
-    0 0 10px #a855f7,
-    0 0 25px #7e22ce;
+    position:relative;
+    transform-style:preserve-3d;
+    animation:dealIn .5s cubic-bezier(.2,.8,.3,1.15) both;
 }
 
-.info{
-    font-size:22px;
-    margin:10px;
+@keyframes dealIn{
+    from{opacity:0;transform:translateY(-90px) translateX(60px) rotate(12deg) scale(.6)}
+    to{opacity:1;transform:translateY(0) translateX(0) rotate(0) scale(1)}
+}
+
+.card .face,
+.card .back{
+    position:absolute;
+    inset:0;
+    border-radius:12px;
+    backface-visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.card .face{
+    background:linear-gradient(160deg,#ffffff,#e9e4f5);
+    color:#111;
+    box-shadow:0 0 12px var(--neon-soft),0 0 28px rgba(126,34,206,.35),0 8px 16px rgba(0,0,0,.4);
+}
+
+.card .face .rank{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:30px;
+    line-height:1;
+}
+
+.card .face .suit{
+    font-size:30px;
+    margin-top:6px;
+}
+
+.card .face .pip{
+    position:absolute;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.05;
+}
+
+.card .face .pip.tl{top:7px;left:8px;}
+.card .face .pip.br{bottom:7px;right:8px;transform:rotate(180deg);}
+
+.card.red-suit .face{color:#be123c;}
+
+.card .back{
+    transform:rotateY(180deg);
+    background:
+        repeating-linear-gradient(45deg,rgba(255,255,255,.06) 0 8px,transparent 8px 16px),
+        radial-gradient(circle at 50% 50%,#6d28d9,#2e1065 75%);
+    border:2px solid rgba(233,213,255,.4);
+    box-shadow:0 0 16px var(--neon-soft),0 8px 16px rgba(0,0,0,.4);
+}
+
+.card .back::after{
+    content:"🌌";
+    font-size:34px;
+    filter:drop-shadow(0 0 8px var(--neon));
+    animation:spinSlow 7s linear infinite;
+}
+
+@keyframes spinSlow{
+    from{transform:rotate(0)}
+    to{transform:rotate(360deg)}
+}
+
+.card.hidden-card{
+    transform:rotateY(180deg);
+}
+
+.card.flip{
+    animation:flipReveal .7s cubic-bezier(.3,.7,.3,1.1) both;
+}
+
+@keyframes flipReveal{
+    from{transform:rotateY(180deg)}
+    to{transform:rotateY(0)}
+}
+
+.total-badge{
+    display:inline-block;
+    font-family:'Orbitron',sans-serif;
+    font-size:16px;
+    letter-spacing:2px;
+    padding:6px 18px;
+    border-radius:999px;
+    border:1px solid var(--panel-border);
+    background:rgba(0,0,0,.35);
+    margin-bottom:6px;
+}
+
+.total-badge b{
+    color:var(--cyan);
 }
 
 #result{
-    font-size:30px;
-    margin-top:15px;
-    color:#ffd700;
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(20px,4vw,30px);
+    letter-spacing:3px;
+    margin-top:18px;
+    min-height:42px;
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(255,215,0,.45);
+}
+
+#result.win{
+    color:var(--green);
+    text-shadow:0 0 18px rgba(52,211,153,.55);
+    animation:popResult .6s cubic-bezier(.2,.9,.3,1.4);
+}
+
+#result.lose{
+    color:var(--red);
+    text-shadow:0 0 18px rgba(244,63,94,.55);
+    animation:shakeResult .5s ease;
+}
+
+#result.push{
+    color:var(--cyan);
+    text-shadow:0 0 18px rgba(34,211,238,.5);
+    animation:popResult .6s cubic-bezier(.2,.9,.3,1.4);
+}
+
+@keyframes popResult{
+    0%{transform:scale(.4);opacity:0}
+    70%{transform:scale(1.15)}
+    100%{transform:scale(1);opacity:1}
+}
+
+@keyframes shakeResult{
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-10px)}
+    40%{transform:translateX(10px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(6px)}
+}
+
+.flash-win{
+    animation:tableGlowWin 1s ease;
+}
+
+.flash-lose{
+    animation:tableGlowLose 1s ease;
+}
+
+@keyframes tableGlowWin{
+    0%,100%{box-shadow:0 10px 40px rgba(0,0,0,.45)}
+    40%{box-shadow:0 0 70px rgba(52,211,153,.5)}
+}
+
+@keyframes tableGlowLose{
+    0%,100%{box-shadow:0 10px 40px rgba(0,0,0,.45)}
+    40%{box-shadow:0 0 70px rgba(244,63,94,.5)}
 }
 
 #leaderboard{
     text-align:left;
-    max-width:400px;
-    margin:auto;
-    margin-top:20px;
+    max-width:460px;
+    margin:22px auto 60px;
 }
 
 .rank{
-    padding:8px;
-    border-bottom:1px solid rgba(255,255,255,.15);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 8px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    font-size:18px;
+    font-weight:600;
+    letter-spacing:.5px;
+    animation:rankIn .4s ease both;
 }
 
-.betButtons{
-    margin-top:15px;
+@keyframes rankIn{
+    from{opacity:0;transform:translateX(-14px)}
+    to{opacity:1;transform:translateX(0)}
 }
 
-.gameButtons{
-    margin-top:15px;
+.rank .pos{
+    font-family:'Orbitron',sans-serif;
+    width:38px;
+    color:var(--neon);
 }
 
-h2{
-    margin-top:15px;
+.rank:first-child .pos{color:var(--gold);}
+.rank:nth-child(2) .pos{color:#cbd5e1;}
+.rank:nth-child(3) .pos{color:#d97706;}
+
+.rank .who{
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.rank .amt{
+    color:var(--gold);
+    font-family:'Orbitron',sans-serif;
+    font-size:14px;
+}
+
+#adminPanel{
+    border-color:rgba(255,215,0,.45);
+    box-shadow:0 0 40px rgba(255,215,0,.12);
+}
+
+#adminPanel h2{
+    color:var(--gold);
+    animation:adminPulse 2s ease infinite;
+}
+
+@keyframes adminPulse{
+    0%,100%{text-shadow:0 0 8px rgba(255,215,0,.4)}
+    50%{text-shadow:0 0 26px rgba(255,215,0,.9)}
+}
+
+.bet-row,.action-row{
+    margin-top:18px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+}
+
+.muted{
+    opacity:.65;
+    font-size:15px;
+    margin-top:10px;
+    letter-spacing:1px;
+}
+
+@media (max-width:560px){
+    .card{width:72px;height:104px;}
+    .card .face .rank{font-size:24px;}
+    .hud-item{min-width:140px;font-size:17px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+    }
 }
 
 </style>
@@ -142,482 +539,551 @@ h2{
 
 <body>
 
+<canvas id="stars"></canvas>
+
 <div class="container">
 
-<h1 class="title">🌌 GALAXY BLACKJACK 🌌</h1>
+<h1 class="title">GALAXY BLACKJACK</h1>
+<div class="subtitle">Deep Space Casino · Sector 21</div>
 
 <div id="login" class="panel">
-
 <h2>Create Username</h2>
-
 <br>
-
-<input
-id="username"
-placeholder="Enter Username">
-
+<input id="username" placeholder="Enter username" maxlength="20" onkeydown="if(event.key==='Enter')createUser()">
 <br><br>
-
-<button onclick="createUser()">
-Play
-</button>
-
+<button onclick="createUser()">Launch</button>
 </div>
 
-<div
-id="game"
-style="display:none;">
+<div id="game" style="display:none;">
 
-<div class="panel">
+<div class="panel" id="table">
 
 <h2 id="playerName"></h2>
 
-<div class="info">
-💰 Chips:
-<span id="chips">20000</span>
+<div class="hud">
+<div class="hud-item">💰 <span id="chips">0</span></div>
+<div class="hud-item">🎲 Bet: <span id="bet">0</span></div>
 </div>
 
-<div class="info">
-🎲 Current Bet:
-<span id="bet">0</span>
+<div class="zone-label"><h2>Dealer</h2></div>
+<div class="cards" id="dealerCards"></div>
+<div class="total-badge">Total <b id="dealerTotal">0</b></div>
+
+<div class="zone-label"><h2>You</h2></div>
+<div class="cards" id="playerCards"></div>
+<div class="total-badge">Total <b id="playerTotal">0</b></div>
+
+<div class="bet-row" id="betRow">
+<button class="chip-btn" onclick="betAmount(10)">10</button>
+<button class="chip-btn" onclick="betAmount(50)">50</button>
+<button class="chip-btn" onclick="betAmount(100)">100</button>
+<button class="chip-btn" onclick="betAmount(250)">250</button>
+<button class="chip-btn chip-gold" onclick="allIn()">ALL IN</button>
+<button onclick="clearBet()" id="clearBtn">Clear</button>
 </div>
 
-<h2>Dealer Hand</h2>
-
-<div
-class="cards"
-id="dealerCards">
-</div>
-
-<div class="info">
-Dealer Total:
-<span id="dealerTotal">0</span>
-</div>
-
-<h2>Your Hand</h2>
-
-<div
-class="cards"
-id="playerCards">
-</div>
-
-<div class="info">
-Your Total:
-<span id="playerTotal">0</span>
-</div>
-
-<div class="betButtons">
-
-<button onclick="betAmount(10)">
-10
-</button>
-
-<button onclick="betAmount(50)">
-50
-</button>
-
-<button onclick="betAmount(100)">
-100
-</button>
-
-<button onclick="betAmount(250)">
-250
-</button>
-
-<button onclick="allIn()">
-ALL IN
-</button>
-
-</div>
-
-<div class="gameButtons">
-
-<button onclick="startRound()">
-Deal
-</button>
-
-<button onclick="hit()">
-Hit
-</button>
-
-<button onclick="stand()">
-Stand
-</button>
-
+<div class="action-row">
+<button onclick="startRound()" id="dealBtn">Deal</button>
+<button onclick="hit()" id="hitBtn" disabled>Hit</button>
+<button onclick="stand()" id="standBtn" disabled>Stand</button>
+<button onclick="rescueChips()" id="rescueBtn" style="display:none;">Emergency Refuel +1,000</button>
 </div>
 
 <div id="result"></div>
 
+</div>
+
 <div id="adminPanel" class="panel" style="display:none;">
-
-<h2>⚡ ADMIN PANEL ⚡</h2>
-
-<button onclick="addChips(1000)">
-+1,000 Chips
-</button>
-
-<button onclick="addChips(10000)">
-+10,000 Chips
-</button>
-
-<button onclick="addChips(100000)">
-+100,000 Chips
-</button>
-
-<button onclick="resetLeaderboard()">
-Reset Leaderboard
-</button>
-
+<h2>⚡ Admin Panel ⚡</h2>
+<button onclick="addChips(1000)">+1,000</button>
+<button onclick="addChips(10000)">+10,000</button>
+<button onclick="addChips(100000)">+100,000</button>
+<button onclick="resetLeaderboard()">Reset Leaderboard</button>
 </div>
 
 </div>
 
-<div
-id="leaderboard"
-class="panel">
-
+<div id="leaderboard" class="panel">
 <h2>🏆 Leaderboard</h2>
-
 <div id="leaderboardList"></div>
-
-</div>
-
+<div class="muted" id="lbEmpty" style="display:none;">No pilots ranked yet. Win some chips.</div>
 </div>
 
 </div>
 
 <script>
 
-let chips = Number(localStorage.getItem("chips")) || 20000;
-let username = localStorage.getItem("username") || "";
+const store = {
+    get(key){
+        try{ return localStorage.getItem(key); }
+        catch(e){ return null; }
+    },
+    set(key,val){
+        try{ localStorage.setItem(key,val); }
+        catch(e){}
+    },
+    remove(key){
+        try{ localStorage.removeItem(key); }
+        catch(e){}
+    }
+};
 
+const SUITS = [
+    {sym:"♠",red:false},
+    {sym:"♥",red:true},
+    {sym:"♦",red:true},
+    {sym:"♣",red:false}
+];
+
+const RANKS = [
+    {r:"A",v:11},{r:"2",v:2},{r:"3",v:3},{r:"4",v:4},
+    {r:"5",v:5},{r:"6",v:6},{r:"7",v:7},{r:"8",v:8},
+    {r:"9",v:9},{r:"10",v:10},{r:"J",v:10},{r:"Q",v:10},{r:"K",v:10}
+];
+
+let chips = Number(store.get("chips"));
+if(!Number.isFinite(chips) || chips < 0) chips = 20000;
+
+let username = store.get("username") || "";
 let currentBet = 0;
-
+let deck = [];
 let playerHand = [];
 let dealerHand = [];
-
 let roundActive = false;
+let holeRevealed = false;
 
-if(username){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("game").style.display = "block";
-   document.getElementById("playerName").innerText =
-"👤 " + username;
+const $ = id => document.getElementById(id);
 
-if(username === "God_slayer82"){
-    document.getElementById("adminPanel").style.display = "block";
-}
-function addChips(amount){
-
-    if(username !== "God_slayer82"){
-        return;
+function buildDeck(){
+    deck = [];
+    for(const s of SUITS){
+        for(const k of RANKS){
+            deck.push({rank:k.r, value:k.v, suit:s.sym, red:s.red});
+        }
     }
-
-    chips += amount;
-
-    saveData();
-
-    document.getElementById("result").innerText =
-    "⚡ ADMIN ADDED " +
-    amount.toLocaleString() +
-    " CHIPS";
+    for(let i = deck.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
 }
 
-function resetLeaderboard(){
+function drawCard(){
+    if(deck.length < 15) buildDeck();
+    return deck.pop();
+}
 
-    if(username !== "God_slayer82"){
+function handTotal(hand){
+    let total = 0;
+    let aces = 0;
+    for(const c of hand){
+        total += c.value;
+        if(c.rank === "A") aces++;
+    }
+    while(total > 21 && aces > 0){
+        total -= 10;
+        aces--;
+    }
+    return total;
+}
+
+function isBlackjack(hand){
+    return hand.length === 2 && handTotal(hand) === 21;
+}
+
+function cardHTML(card, hidden, flip){
+    const cls = `card${card.red ? " red-suit" : ""}${hidden ? " hidden-card" : ""}${flip ? " flip" : ""}`;
+    return `<div class="${cls}">
+        <div class="face">
+            <div class="pip tl">${card.rank}<br>${card.suit}</div>
+            <div class="rank">${card.rank}</div>
+            <div class="suit">${card.suit}</div>
+            <div class="pip br">${card.rank}<br>${card.suit}</div>
+        </div>
+        <div class="back"></div>
+    </div>`;
+}
+
+function renderHands(revealFlip){
+    let playerHTML = "";
+    let dealerHTML = "";
+
+    playerHand.forEach(c => { playerHTML += cardHTML(c,false,false); });
+
+    dealerHand.forEach((c,i) => {
+        const hideThis = !holeRevealed && i === 1;
+        const flipThis = revealFlip && i === 1;
+        dealerHTML += cardHTML(c, hideThis, flipThis);
+    });
+
+    $("playerCards").innerHTML = playerHTML;
+    $("dealerCards").innerHTML = dealerHTML;
+
+    $("playerTotal").innerText = playerHand.length ? handTotal(playerHand) : 0;
+
+    if(!dealerHand.length){
+        $("dealerTotal").innerText = 0;
+    } else if(holeRevealed){
+        $("dealerTotal").innerText = handTotal(dealerHand);
+    } else {
+        $("dealerTotal").innerText = dealerHand[0].value + " + ?";
+    }
+}
+
+function setButtons(){
+    $("dealBtn").disabled = roundActive || currentBet <= 0;
+    $("hitBtn").disabled = !roundActive;
+    $("standBtn").disabled = !roundActive;
+    $("clearBtn").disabled = roundActive || currentBet <= 0;
+
+    document.querySelectorAll("#betRow .chip-btn").forEach(btn => {
+        btn.disabled = roundActive;
+    });
+
+    const broke = !roundActive && chips <= 0 && currentBet <= 0;
+    $("rescueBtn").style.display = broke ? "inline-block" : "none";
+}
+
+function animateNumber(el, from, to){
+    if(from === to){
+        el.innerText = to.toLocaleString();
         return;
     }
+    const steps = 18;
+    let step = 0;
+    const tick = () => {
+        step++;
+        const val = Math.round(from + (to - from) * (step / steps));
+        el.innerText = val.toLocaleString();
+        if(step < steps) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+}
 
-    localStorage.removeItem("leaderboard");
+let shownChips = chips;
+let shownBet = 0;
 
+function updateDisplay(){
+    animateNumber($("chips"), shownChips, chips);
+    animateNumber($("bet"), shownBet, currentBet);
+    shownChips = chips;
+    shownBet = currentBet;
+    setButtons();
     updateLeaderboard();
-
-    document.getElementById("result").innerText =
-    "⚡ LEADERBOARD RESET";
 }
-updateDisplay();
+
+function saveData(){
+    store.set("chips", String(chips));
+
+    let leaderboard = {};
+    try{ leaderboard = JSON.parse(store.get("leaderboard")) || {}; }
+    catch(e){ leaderboard = {}; }
+
+    if(username) leaderboard[username] = chips;
+
+    store.set("leaderboard", JSON.stringify(leaderboard));
+    updateDisplay();
+}
+
+function updateLeaderboard(){
+    let leaderboard = {};
+    try{ leaderboard = JSON.parse(store.get("leaderboard")) || {}; }
+    catch(e){ leaderboard = {}; }
+
+    if(username) leaderboard[username] = chips;
+
+    const sorted = Object.entries(leaderboard).sort((a,b) => b[1] - a[1]);
+
+    let html = "";
+    sorted.forEach((player,index) => {
+        const medal = index === 0 ? "👑" : index === 1 ? "🥈" : index === 2 ? "🥉" : "";
+        html += `<div class="rank" style="animation-delay:${index * 60}ms">
+            <span class="pos">#${index + 1}</span>
+            <span class="who">${escapeHTML(player[0])} ${medal}</span>
+            <span class="amt">${Number(player[1]).toLocaleString()}</span>
+        </div>`;
+    });
+
+    $("leaderboardList").innerHTML = html;
+    $("lbEmpty").style.display = sorted.length ? "none" : "block";
+}
+
+function escapeHTML(str){
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function showResult(text, type){
+    const el = $("result");
+    el.className = "";
+    void el.offsetWidth;
+    el.innerText = text;
+    if(type) el.classList.add(type);
+
+    const table = $("table");
+    table.classList.remove("flash-win","flash-lose");
+    void table.offsetWidth;
+    if(type === "win") table.classList.add("flash-win");
+    if(type === "lose") table.classList.add("flash-lose");
+}
+
 function createUser(){
+    const value = $("username").value.trim();
 
-    username = document.getElementById("username").value.trim();
-
-    if(username === ""){
+    if(value === ""){
+        $("username").focus();
+        showResult("");
         alert("Enter a username");
         return;
     }
 
-    localStorage.setItem("username", username);
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("game").style.display = "block";
-
-    document.getElementById("playerName").innerText =
-    "👤 " + username;
-
-    updateDisplay();
+    username = value;
+    store.set("username", username);
+    enterGame();
 }
 
-function saveData(){
+function enterGame(){
+    $("login").style.display = "none";
+    $("game").style.display = "block";
+    $("playerName").innerText = "👤 " + username;
 
-    localStorage.setItem("chips", chips);
-
-    let leaderboard =
-    JSON.parse(
-    localStorage.getItem("leaderboard")
-    ) || {};
-
-    leaderboard[username] = chips;
-
-    localStorage.setItem(
-    "leaderboard",
-    JSON.stringify(leaderboard)
-    );
-
-    updateDisplay();
-}
-
-function updateDisplay(){
-
-    document.getElementById("chips").innerText =
-    chips.toLocaleString();
-
-    document.getElementById("bet").innerText =
-    currentBet.toLocaleString();
-
-    updateLeaderboard();
-}
-
-function updateLeaderboard(){
-
-    let leaderboard =
-    JSON.parse(
-    localStorage.getItem("leaderboard")
-    ) || {};
-
-    if(username){
-        leaderboard[username] = chips;
+    if(username === "God_slayer82"){
+        $("adminPanel").style.display = "block";
     }
 
-    localStorage.setItem(
-    "leaderboard",
-    JSON.stringify(leaderboard)
-    );
+    saveData();
+}
 
-    let sorted =
-    Object.entries(leaderboard)
-    .sort((a,b)=>b[1]-a[1]);
+function addChips(amount){
+    if(username !== "God_slayer82") return;
+    chips += amount;
+    saveData();
+    showResult("⚡ ADMIN ADDED " + amount.toLocaleString() + " CHIPS", "win");
+}
 
-    let html = "";
-
-    sorted.forEach((player,index)=>{
-
-        html +=
-        `<div class="rank">
-        #${index+1}
-        ${player[0]}
-        -
-        ${Number(player[1]).toLocaleString()}
-        Chips
-        </div>`;
-    });
-
-    document.getElementById(
-    "leaderboardList"
-    ).innerHTML = html;
+function resetLeaderboard(){
+    if(username !== "God_slayer82") return;
+    store.remove("leaderboard");
+    saveData();
+    showResult("⚡ LEADERBOARD RESET", "push");
 }
 
 function betAmount(amount){
-
-    if(chips < amount){
-        return;
-    }
-
+    if(roundActive || chips < amount) return;
     chips -= amount;
     currentBet += amount;
-
     saveData();
 }
 
 function allIn(){
-
-    if(chips <= 0){
-        return;
-    }
-
+    if(roundActive || chips <= 0) return;
     currentBet += chips;
     chips = 0;
-
     saveData();
 }
 
-function drawCard(){
-
-    return Math.floor(
-    Math.random() * 11
-    ) + 1;
+function clearBet(){
+    if(roundActive || currentBet <= 0) return;
+    chips += currentBet;
+    currentBet = 0;
+    saveData();
 }
 
-function handTotal(hand){
-
-    return hand.reduce(
-    (sum,card)=>sum+card,0
-    );
-}
-
-function renderHands(){
-
-    let playerHTML = "";
-    let dealerHTML = "";
-
-    playerHand.forEach(card=>{
-
-        playerHTML +=
-        `<div class="card">${card}</div>`;
-    });
-
-    dealerHand.forEach(card=>{
-
-        dealerHTML +=
-        `<div class="card">${card}</div>`;
-    });
-
-    document.getElementById(
-    "playerCards"
-    ).innerHTML = playerHTML;
-
-    document.getElementById(
-    "dealerCards"
-    ).innerHTML = dealerHTML;
-
-    document.getElementById(
-    "playerTotal"
-    ).innerText =
-    handTotal(playerHand);
-
-    document.getElementById(
-    "dealerTotal"
-    ).innerText =
-    handTotal(dealerHand);
+function rescueChips(){
+    if(roundActive || chips > 0 || currentBet > 0) return;
+    chips = 1000;
+    saveData();
+    showResult("🛸 EMERGENCY REFUEL: +1,000 CHIPS", "push");
 }
 
 function startRound(){
+    if(roundActive) return;
 
     if(currentBet <= 0){
-
-        alert(
-        "Place a bet first!"
-        );
-
+        showResult("PLACE A BET FIRST", "lose");
         return;
     }
 
-    document.getElementById(
-    "result"
-    ).innerText = "";
+    buildDeck();
+    playerHand = [drawCard(), drawCard()];
+    dealerHand = [drawCard(), drawCard()];
 
-    playerHand = [];
-    dealerHand = [];
+    roundActive = true;
+    holeRevealed = false;
 
-    playerHand.push(drawCard());
-    playerHand.push(drawCard());
+    showResult("");
+    renderHands(false);
+    setButtons();
 
-    dealerHand.push(drawCard());
-    dealerHand.push(drawCard());
+    const playerBJ = isBlackjack(playerHand);
+    const dealerBJ = isBlackjack(dealerHand);
 
-    renderHands();
-}
+    if(playerBJ || dealerBJ){
+        holeRevealed = true;
+        roundActive = false;
+        renderHands(true);
 
-function hit(){
-
-    if(currentBet <= 0){
-        return;
-    }
-
-    playerHand.push(
-    drawCard()
-    );
-
-    renderHands();
-
-    if(
-    handTotal(playerHand)
-    > 21
-    ){
-
-        document.getElementById(
-        "result"
-        ).innerText =
-        "💥 BUST! YOU LOSE";
+        if(playerBJ && dealerBJ){
+            chips += currentBet;
+            showResult("🤝 DOUBLE BLACKJACK · PUSH", "push");
+        } else if(playerBJ){
+            chips += currentBet + Math.floor(currentBet * 1.5);
+            showResult("🌟 BLACKJACK! PAYS 3:2", "win");
+        } else {
+            showResult("💀 DEALER BLACKJACK", "lose");
+        }
 
         currentBet = 0;
-
         saveData();
     }
 }
 
+function hit(){
+    if(!roundActive) return;
+
+    playerHand.push(drawCard());
+    renderHands(false);
+
+    if(handTotal(playerHand) > 21){
+        holeRevealed = true;
+        roundActive = false;
+        renderHands(true);
+        showResult("💥 BUST! YOU LOSE", "lose");
+        currentBet = 0;
+        saveData();
+    } else {
+        setButtons();
+    }
+}
+
 function stand(){
+    if(!roundActive) return;
 
-    if(currentBet <= 0){
-        return;
-    }
+    roundActive = false;
+    holeRevealed = true;
+    renderHands(true);
+    setButtons();
 
-    while(
-    handTotal(dealerHand)
-    < 17
-    ){
+    const dealerPlay = () => {
+        if(handTotal(dealerHand) < 17){
+            dealerHand.push(drawCard());
+            renderHands(false);
+            setTimeout(dealerPlay, 550);
+            return;
+        }
+        settle();
+    };
 
-        dealerHand.push(
-        drawCard()
-        );
-    }
+    setTimeout(dealerPlay, 700);
+}
 
-    renderHands();
+function settle(){
+    const playerScore = handTotal(playerHand);
+    const dealerScore = handTotal(dealerHand);
 
-    let playerScore =
-    handTotal(playerHand);
-
-    let dealerScore =
-    handTotal(dealerHand);
-
-    if(
-    dealerScore > 21 ||
-    playerScore > dealerScore
-    ){
-
+    if(dealerScore > 21 || playerScore > dealerScore){
         chips += currentBet * 2;
-
-        document.getElementById(
-        "result"
-        ).innerText =
-        "🎉 YOU WIN";
-
-    }
-    else if(
-    playerScore === dealerScore
-    ){
-
+        showResult(dealerScore > 21 ? "🎉 DEALER BUSTS · YOU WIN" : "🎉 YOU WIN", "win");
+    } else if(playerScore === dealerScore){
         chips += currentBet;
-
-        document.getElementById(
-        "result"
-        ).innerText =
-        "🤝 PUSH";
-
-    }
-    else{
-
-        document.getElementById(
-        "result"
-        ).innerText =
-        "❌ YOU LOSE";
+        showResult("🤝 PUSH", "push");
+    } else {
+        showResult("❌ YOU LOSE", "lose");
     }
 
     currentBet = 0;
-
     saveData();
 }
 
-updateDisplay();
+const canvas = $("stars");
+const ctx = canvas.getContext("2d");
+let stars = [];
+let comets = [];
+
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    seedStars();
+}
+
+function seedStars(){
+    const count = Math.min(220, Math.floor(canvas.width * canvas.height / 7000));
+    stars = [];
+    for(let i = 0; i < count; i++){
+        stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.6 + .3,
+            tw: Math.random() * Math.PI * 2,
+            twSpeed: .01 + Math.random() * .03,
+            drift: .02 + Math.random() * .08,
+            hue: Math.random() < .15 ? 265 : (Math.random() < .1 ? 190 : 0)
+        });
+    }
+}
+
+function spawnComet(){
+    comets.push({
+        x: Math.random() * canvas.width * .8,
+        y: Math.random() * canvas.height * .3,
+        vx: 5 + Math.random() * 4,
+        vy: 2 + Math.random() * 2,
+        life: 1
+    });
+    setTimeout(spawnComet, 5000 + Math.random() * 9000);
+}
+
+let reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function paintStars(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(const s of stars){
+        s.tw += s.twSpeed;
+        if(!reduceMotion){
+            s.y += s.drift;
+            if(s.y > canvas.height + 2) s.y = -2;
+        }
+        const alpha = .35 + Math.abs(Math.sin(s.tw)) * .65;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.hue
+            ? `hsla(${s.hue},90%,75%,${alpha})`
+            : `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+    }
+
+    comets = comets.filter(c => c.life > 0);
+    for(const c of comets){
+        c.x += c.vx;
+        c.y += c.vy;
+        c.life -= .012;
+        const grad = ctx.createLinearGradient(c.x, c.y, c.x - c.vx * 12, c.y - c.vy * 12);
+        grad.addColorStop(0, `rgba(233,213,255,${c.life})`);
+        grad.addColorStop(1, "rgba(233,213,255,0)");
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(c.x, c.y);
+        ctx.lineTo(c.x - c.vx * 12, c.y - c.vy * 12);
+        ctx.stroke();
+    }
+
+    requestAnimationFrame(paintStars);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+paintStars();
+if(!reduceMotion) spawnComet();
+
+if(username){
+    enterGame();
+} else {
+    updateDisplay();
+}
+
+renderHands(false);
 
 </script>
 
